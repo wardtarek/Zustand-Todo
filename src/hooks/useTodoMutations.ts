@@ -1,10 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { type Todo } from "../store/todoStore";
+import { useMutation } from "@tanstack/react-query";
+import { useTodoStore, type Todo } from "../store/todoStore";
 
 // Add
-export const useAddTodo = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
+export const useAddTodo = () =>
+  useMutation({
     mutationFn: async (text: string) => {
       const res = await fetch("https://dummyjson.com/todos/add", {
         method: "POST",
@@ -18,14 +17,14 @@ export const useAddTodo = () => {
       const data = await res.json();
       return data;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] }),
+    onSuccess: (newTodo) => {
+      useTodoStore.getState().addTodo(newTodo);
+    },
   });
-};
 
 // Update
-export const useUpdateTodo = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
+export const useUpdateTodo = () =>
+  useMutation({
     mutationFn: async (todo: Todo) => {
       const res = await fetch(`https://dummyjson.com/todos/${todo.id}`, {
         method: "PUT",
@@ -35,20 +34,21 @@ export const useUpdateTodo = () => {
       const data = await res.json();
       return data;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] }),
+    onSuccess: (updated) => {
+      useTodoStore.getState().updateTodo(updated);
+    },
   });
-};
 
 // Delete
-export const useDeleteTodo = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
+export const useDeleteTodo = () =>
+  useMutation({
     mutationFn: async (id: number) => {
       await fetch(`https://dummyjson.com/todos/${id}`, {
         method: "DELETE",
       });
       return id;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] }),
+    onSuccess: (id) => {
+      useTodoStore.getState().deleteTodo(id);
+    },
   });
-};

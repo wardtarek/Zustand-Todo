@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { usePaginationStore } from "../store/todoStore";
+import { usePaginationStore, useTodoStore } from "../store/todoStore";
+import { useEffect } from "react";
 
 
 export const useTodos = () => {
-  // const setTodos = useTodoStore((state) => state.setTodos);
+  const setTodos = useTodoStore((state) => state.setTodos);
   const { limit, skip } = usePaginationStore();
   const query = useQuery({
     queryKey: ["todos", { limit, skip }],
@@ -16,11 +17,11 @@ export const useTodos = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (query.data) {
-  //     setTodos(query.data);
-  //   }
-  // }, [query.data, setTodos]);
+  useEffect(() => {
+    if (query.data) {
+      setTodos(query.data);
+    }
+  }, [query.data, setTodos]);
 
   return query;
 };
