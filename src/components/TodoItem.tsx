@@ -1,27 +1,24 @@
-import { useTodoStore, type Todo } from "../store/todoStore";
+import { type Todo } from "../store/todoStore";
+import { useDeleteTodo, useUpdateTodo } from "../hooks/useTodoMutations";
 
 interface Props {
   todo: Todo;
 }
 
 const TodoItem = ({ todo }: Props) => {
-  const { toggleTodo, deleteTodo } = useTodoStore();
-
+  const deleteMutation = useDeleteTodo();
+  const updateMutation = useUpdateTodo();
   return (
     <div className="flex gap-10 justify-between items-center px-4 rounded-md border mb-2">
       <input
         type="checkbox"
         checked={todo.completed}
-        onChange={() => toggleTodo(todo.id)}
+        onChange={() => updateMutation.mutate(todo)}
       />
-      <span
-        className={`${
-          todo.completed ? "line-through" : ""
-        } overflow-hidden text-ellipsis whitespace-nowrap max-w-[180px]`}
-      >
-        {todo.text}
+      <span style={{ textDecoration: todo.completed ? "line-through" : "" }}>
+        {todo.todo}
       </span>
-      <button onClick={() => deleteTodo(todo.id)}>🗑️</button>
+      <button onClick={() => deleteMutation.mutate(todo.id)}>🗑️</button>
     </div>
   );
 };

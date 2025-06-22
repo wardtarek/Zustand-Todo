@@ -1,20 +1,20 @@
 import { useState } from "react";
-import { useTodoStore } from "../store/todoStore";
+import { useAddTodo } from "../hooks/useTodoMutations";
 
 const TodoForm = () => {
   const [text, setText] = useState("");
-  const addTodo = useTodoStore((state) => state.addTodo);
+  const addMutation = useAddTodo();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
-      addTodo(text);
+      addMutation.mutate(text);
       setText("");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-10 mt-10">
+    <form onSubmit={handleSubmit} className="flex justify-center gap-10 mt-10">
       <input
         type="text"
         placeholder="Add new one"
